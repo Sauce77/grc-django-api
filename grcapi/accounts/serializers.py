@@ -10,8 +10,6 @@ class RolSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
 
-    rol = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-
     class Meta:
         model = User
-        fields = ["first_name","last_name","username", "email","password","rol"]
+        fields = ["first_name","last_name","username", "email","password"]
