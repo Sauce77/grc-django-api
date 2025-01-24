@@ -4,6 +4,11 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import api_view
+
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import permission_classes,authentication_classes
+from rest_framework.permissions import IsAuthenticated,IsAdminUser
 
 # Create your views here.
 
@@ -13,6 +18,23 @@ from .serializers import RegistroSerializer
 
 def root(request):
     return(HttpResponse("root"))
+
+@api_view(["POST"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAdminUser])
+def crear_registro(request):
+    """
+        Agrega un registro nuevo de extraccion a la base de datos.
+    """
+    serializer = RegistroSerializer(data=request.data, many=True)
+
+    if serializer.is_valid():
+
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class RegistroList(APIView):
     """
