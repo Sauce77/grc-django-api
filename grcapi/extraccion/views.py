@@ -34,7 +34,16 @@ def crear_registro(request):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+@api_view(["GET"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def mostrar_registros(request,app):
+    """
+        Muestra los usuarios de una app.
+    """
+    registros = Registro.objects.filter(app__nombre=app)
+    serializer = RegistroSerializer(registros, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 class RegistroList(APIView):
     """
