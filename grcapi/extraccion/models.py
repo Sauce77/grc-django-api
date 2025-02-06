@@ -66,5 +66,7 @@ class Registro(models.Model):
     requiere_acceso = models.CharField(max_length=15,null=True, blank=True)
     comentarios = models.TextField(null=True, blank=True)
 
+    en_extraccion = models.BooleanField(default=True)
+
     def __str__(self):
         return self.nombre
