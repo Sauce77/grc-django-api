@@ -2,30 +2,24 @@ from rest_framework import serializers
 
 from .models import Aplicativo, Perfil, Responsable, Registro
 
-class AppSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Aplicativo
-        exclude = ["id"]
-
-class PerfilSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Perfil
-        exclude = ["id"]
-
-class ResponsableSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Responsable
-        exclude = ["id"]
-
-class RegistroSerializer(serializers.ModelSerializer):
-
-    app = AppSerializer()
-    perfil = PerfilSerializer()
-    responsable = ResponsableSerializer()
+class PostRegistroSerializer(serializers.ModelSerializer):
+    """
+        Serializa la informacion para insertar un registro.
+    """
+    app = serializers.CharField(max_length=100,required=True)
+    responsable = serializers.CharField(max_length=100,required=True)
+    perfil = serializers.CharField(max_length=100,allow_blank=True,allow_null=True)
 
     class Meta:
         model = Registro
-        fields = "__all__"
+        exclude = ["id"]
+
+class GetRegistroSerializer(serializers.ModelSerializer):
+    """
+        Serializa la informacion para mostrar un registro.
+    """
+    
+
+    class Meta:
+        model = Registro
+        exclude = ["id"]
