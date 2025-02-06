@@ -14,7 +14,7 @@ def leer_registros(data):
         for registro in registros.validated_data:
             try:
                 modificar_registro(registro)
-            except:
+            except :
                 crear_registro(registro)
 
 
@@ -76,6 +76,17 @@ def modificar_registro(validated_data):
     nombre_usuario = validated_data["usuario"]
 
     # obtenemos el registro
-    obj_registro = Registro.objects.filter(app__nombre=nombre_app).get(nombre_usuario)
+    obj_registro = Registro.objects.filter(app__nombre=nombre_app).get(usuario=nombre_usuario)
     obj_registro.ultimo_acceso = validated_data["ultimo_acceso"]
+    obj_registro.save()
 
+def borrar_registro(validated_data):
+    """
+        Aquellos usuarios que no aparezcan en la extraccion serán borrados
+        de la base de datos.
+    """
+    nombre_app = validated_data["app"]
+    nombre_usuario = validated_data["usuario"]
+
+    obj_registro = Registro.objects.filter(app=nombre_app).get(usuario=nombre_usuario)
+    obj_registro.delete()
