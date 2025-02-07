@@ -1,9 +1,10 @@
 from django.urls import path
 
-from .views import root, mostrar_registros, actualizar_registros
+from .views import root, mostrar_registros, actualizar_registros, mostrar_no_extraccion
 
 urlpatterns = [
     path('', root),
     path("registros/<str:app>/", mostrar_registros, name="mostrar_registros"),
-    path("insertar/", actualizar_registros, name="actualizar_registros")
+    path("insertar/", actualizar_registros, name="actualizar_registros"),
+    path("omitidos/", mostrar_no_extraccion, name="mostrar_no_extraccion"),
 ]

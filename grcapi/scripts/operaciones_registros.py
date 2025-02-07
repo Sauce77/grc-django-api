@@ -78,6 +78,7 @@ def modificar_registro(validated_data):
     # obtenemos el registro
     obj_registro = Registro.objects.filter(app__nombre=nombre_app).get(usuario=nombre_usuario)
     obj_registro.ultimo_acceso = validated_data["ultimo_acceso"]
+    obj_registro.en_extraccion = True
     obj_registro.save()
 
 def borrar_registro(validated_data):

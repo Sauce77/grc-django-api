@@ -40,7 +40,26 @@ def actualizar_registros(request):
     """
         Recibe una extraccion completa. Actualiza los datos ya existentes en la 
         base de datos y crea aquellos que no estan presentes.
+
+        Para detectar los que no estan presentes, se recurre al atributo "en_extraccion",
+        si es verdadero, el registro fue encontrado en la extraccion.
     """
+    # colocamos el estado "en_extraccion" como false
+    Registro.objects.all().update(en_extraccion=False)
+    # recibe la extraccion
     leer_registros(request.data)
         
     return Response(status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAdminUser])
+def mostrar_no_extraccion(request):
+    """
+        Muestra los registros cuyo atributo "en_extraccion"=False
+        Esto quiere decir que no se encontraron en la extraccion
+        mas reciente
+    """
+    registros = Registro.objects.filter(en_extraccion=False)
+    serializer = GetRegistroSerializer(registros, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
