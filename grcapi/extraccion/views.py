@@ -18,7 +18,18 @@ from .models import Registro
 from .serializers import GetRegistroSerializer,PostRegistroSerializer
 
 def root(request):
-    return(HttpResponse("root"))        
+    return(HttpResponse("root"))
+
+@api_view(["GET"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAdminUser])
+def mostrar_all_registros(request):
+    """
+        Muestra todos los resgistros en la base de datos.
+    """
+    registros = Registro.objects.all()
+    serializer = GetRegistroSerializer(registros, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
     
 @api_view(["GET"])
 @authentication_classes([TokenAuthentication])
