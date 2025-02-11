@@ -19,7 +19,20 @@ class GetRegistroSerializer(serializers.ModelSerializer):
         Serializa la informacion para mostrar un registro.
     """
     
+    app = serializers.StringRelatedField()
+    responsable = serializers.StringRelatedField()
+    perfil = serializers.StringRelatedField()
 
     class Meta:
         model = Registro
         exclude = ["id"]
+
+class DeleteRegistroSerializer(serializers.ModelSerializer):
+    """
+        Recopila el app y usuario que sera borrado.
+    """
+    app = serializers.CharField(max_length=100,required=True)
+
+    class Meta:
+        model = Registro
+        fields = ["id","app","usuario"]

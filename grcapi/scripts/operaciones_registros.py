@@ -1,8 +1,8 @@
 from extraccion.models import Registro
 from .asignacion import encontrarPerfil,encontrarAplicativo,encontrarResponsable
-from extraccion.serializers import PostRegistroSerializer
+from extraccion.serializers import PostRegistroSerializer,DeleteRegistroSerializer
 
-def leer_registros(data):
+def leer_op_registros(data):
     """
         Utiliza la informacion recibida en el cuerpo del request
         para crear, actualizar y borrar los registros de la base
@@ -16,6 +16,8 @@ def leer_registros(data):
                 modificar_registro(registro)
             except :
                 crear_registro(registro)
+
+        return {"message": "Se ha actualizado la informacion."}
 
 
     return {"message": "Hay errores en la informacion ingresada."}
@@ -81,13 +83,30 @@ def modificar_registro(validated_data):
     obj_registro.en_extraccion = True
     obj_registro.save()
 
-def borrar_registro(validated_data):
+def borrar_op_registros(data):
     """
         Aquellos usuarios que no aparezcan en la extraccion serán borrados
         de la base de datos.
     """
-    nombre_app = validated_data["app"]
-    nombre_usuario = validated_data["usuario"]
+    # almacena los errores al momento 
+    messages = []
 
-    obj_registro = Registro.objects.filter(app=nombre_app).get(usuario=nombre_usuario)
-    obj_registro.delete()
+    registros = DeleteRegistroSerializer(data=data, many=True)
+
+    if registros.is_valid(): 
+        for registro in registros.validated_data:
+
+            nombre_app = registro["app"]
+            nombre_usuario = registro["usuario"]
+
+            try:
+                Registro.objects.filter(app=nombre_app).get(usuario=nombre_usuario).delete()
+                messages.append(f"Usuario: {nombre_usuario} - App: {nombre_app}. Borrado.")
+            except :
+                messages.append(f"No se encontro {nombre_usuario} en {nombre_app}.")
+        
+    return messages
+        
+
+
+    
